@@ -7,5 +7,27 @@ def getDbInstance()->JsonDatabase:
     path = os.path.join(db_PATH, "db.json")
     return pysondb.db.getDb(path)
 
+def getInputDir()->str:
+    p = os.environ.get("INPUT_PATH", "./cache/input")
+    if not os.path.exists(p):
+        os.makedirs(p)
+    return os.path.abspath(p)
+
+def getOutputDir()->str:
+    p = os.environ.get("OUTPUT_PATH", "./cache/output")
+    if not os.path.exists(p):
+        os.makedirs(p)
+    return os.path.abspath(p)
+
+def getModelPath()->str:
+    p = os.environ.get("MODEL_PATH", "./cache/model")
+    if not os.path.exists(p):
+        os.makedirs(p)
+    return os.path.abspath(p)
+
 def getBackgroundIdleSeconds()->int:
-    return 5
+    s = os.environ.get("BG_TASK_WAIT_SECS", "5")
+    return int(s)
+
+def getTranscribeDevice()->str:
+    return os.environ.get("TRANSCRIBE_DEVICE", "cpu")

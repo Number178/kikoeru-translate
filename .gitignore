@@ -5,3 +5,4 @@ model/
 windows_usage/
 venv/
 db/
+cache/

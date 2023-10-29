@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <button id="newTask" onclick="newTaskBtnClick()">创建转译任务</button>
+    <button id="download" onclick="downloadLrcClick()">回拉结果</button>
+    <button id="search" onclick="searchClick()">搜索</button>
+    <button id="get" onclick="getTaskClick()">拉取状态</button>
+    <button id="download" onclick="downloadTaskClick()">下载歌词</button>
+    
+</body>
+<script>
+    // 测试代码
+
+    const server = "http://localhost:8820"
+    const transcribe_server_url_new_task = `${server}/task/new`;
+    const transcribe_server_url_search_task = `${server}/task/search`;
+    const transcribe_server_url_get_task = `${server}/task/get`;
+    const transcribe_server_url_download_task = `${server}/task/download`;
+
+    let globalId = "228127703798441273";
+
+    // protocol: "http:" or "https:"
+    // host:  "10.1.1.1:3324"
+    // path: "/download/path/1"
+    async function addNewTask(protocol, host, path, workId, workTitle, fileName) {
+        const data = {
+            url: `${protocol}//${host}${path}`,
+            name: `${workId}#${workTitle}#${fileName}`,
+        };
+        const response = await fetch(transcribe_server_url_new_task, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data),
+        });
+        const d = await response.json();
+        globalId = d.id;
+        console.log("new task finished: ", d);
+        console.log("save globalId as: ", globalId);
+        document.querySelector("#get").textContent = `拉取 ${globalId} 状态`
+        
+    }
+
+    // 解决字符串到正则当中的问题
+    function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+    }
+
+    async function searchTask(fileName, workId, workTitle) {
+        // task 存储的名字（用来搜索）是一个字符串，按照`${workId}#${workTitle}#${fileName}` 的形式存储
+        // 根据提供的参数，来尽可能的提供完整的搜索字符串
+        // fileName是唯一必须的
+        let searchQuery = escapeRegExp(fileName);
+        if (workTitle) {
+            searchQuery = `${escapeRegExp(workTitle)}.*${searchQuery}`
+        }
+        if (workId) {
+            // workId is just a number, no escape is needed
+            searchQuery = `${workId}.*${searchQuery}`
+        }
+
+        const url = new URL(transcribe_server_url_search_task);
+        url.searchParams.set("keyword", searchQuery);
+        const response = await fetch(url, {
+            method: "GET",
+        });
+        return await response.json();
+    }
+
+    async function getTask(id) {
+        const url = new URL(`${transcribe_server_url_get_task}/${id}`);
+        const response = await fetch(url, { method: "GET" });
+        return await response.json();
+    }
+
+    async function downloadTask(id) {
+        const url = new URL(`${transcribe_server_url_download_task}/${id}`);
+        const response = await fetch(url, { method: "GET" });
+        const json = await response.json();
+        return json.lrcContent
+    }
+
+    function newTaskBtnClick() {
+        const workId = 1095047
+        const workTitle = "異世界ヘルスへようこそ マゾ御用達 意地悪エルフのオナサポ専門店 ドスケベエルフに格の違いを見せつけられるオナニーサポート"
+        const fileName = "1.異世界ヘルスへようこそ(SEあり).WAV"
+        addNewTask(
+            "http:", 
+            "10.6.10.9:30148", 
+            "/api/media/download/1095047/1",
+            workId,
+            workTitle,
+            fileName,
+        )
+    }
+
+    function downloadLrcClick() {
+        console.log("download lrc back")
+    }
+
+    async function searchClick() {
+        const workId = 1095047
+        const workTitle = "異世界ヘルスへようこそ マゾ御用達 意地悪エルフのオナサポ専門店 ドスケベエルフに格の違いを見せつけられるオナニーサポート"
+        const fileName = "1.異世界ヘルスへようこそ(SEあり).WAV"
+        const tasks = await searchTask(fileName, workId, workTitle);
+        console.log("search results: ", tasks)
+    }
+
+    async function getTaskClick() {
+        const task = await getTask(globalId);
+        console.log(`globalId = ${globalId} 最新状态`, task)
+    }
+
+    async function downloadTaskClick() {
+        const lrcContent = await downloadTask(globalId);
+        console.log("歌词已解析成功")
+        console.log(lrcContent)
+    }
+</script>
+</html>

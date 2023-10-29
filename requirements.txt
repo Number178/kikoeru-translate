@@ -4,3 +4,4 @@ huggingface_hub>=0.13
 tokenizers==0.13.*
 pysondb==1.6.2
 flask==3.0.0
+flask-cors==4.0.0

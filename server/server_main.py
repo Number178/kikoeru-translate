@@ -22,9 +22,12 @@ db = common.getDbInstance()
 output_dir = common.getOutputDir()
 input_dir = common.getInputDir()
 
-def convertTaskIdFromNumberToString(t:Dict):
+def normalizeTask(t:Dict):
     a = t.copy()
     a['id'] = str(a['id'])
+    a.pop("mediaPath")
+    a.pop("lrcPath")
+    a.pop("resourceUrl")
     return a
 
 def multithread_download_file(id:int):
@@ -70,12 +73,12 @@ def searchTask():
     print("keyword = ", keyword)
     tasks = db.reSearch("displayName", keyword)
     print("result numbers = ", len(tasks))
-    return json.dumps(list(map(convertTaskIdFromNumberToString, tasks)))
+    return json.dumps(list(map(normalizeTask, tasks)))
 
 @app.route("/task/get/<int:id>", methods=["GET"])
 def getTask(id):
     task = db.getById(id)
-    return json.dumps(convertTaskIdFromNumberToString(task))
+    return json.dumps(normalizeTask(task))
 
 @app.route("/task/download/<int:id>", methods=["GET"])
 def downloadTask(id):

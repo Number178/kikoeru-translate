@@ -3,8 +3,10 @@ import pysondb
 from pysondb.db import JsonDatabase
 
 def getDbInstance()->JsonDatabase:
-    db_PATH = os.environ.get("DB_PATH", "./db")
-    path = os.path.join(db_PATH, "db.json")
+    DB_PATH = os.environ.get("DB_PATH", "./db")
+    if not os.path.exists(DB_PATH):
+        os.makedirs(DB_PATH)
+    path = os.path.join(DB_PATH, "db.json")
     return pysondb.db.getDb(path)
 
 def getInputDir()->str:

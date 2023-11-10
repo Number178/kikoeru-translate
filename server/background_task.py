@@ -14,6 +14,9 @@ import shutil
 from transcribe import WhisperModel
 import math
 
+output_dir = common.getOutputDir()
+input_dir = common.getInputDir()
+
 def format_seconds(
     seconds: float,
     decimal_marker: str = ".",
@@ -46,10 +49,11 @@ def process_task(task, db: JsonDatabase, model: WhisperModel):
     db.updateById(id, {
         "status": TaskStatus.TRASCRIPTING,
     })
-    output_lrc_path = os.path.join(common.getOutputDir(), f"{id}.lrc")
+    output_lrc_name = f"{id}.lrc"
+    output_lrc_path = os.path.join(output_dir, output_lrc_name)
 
     # 开始转译
-    audio_path = task['mediaPath']
+    audio_path = os.path.join(input_dir, task['mediaPath'])
     lrcContent: str = transcribe_audio(audio_path, model)
     with open(output_lrc_path, "w", encoding="utf8") as f:
         f.write(lrcContent)
@@ -60,7 +64,7 @@ def process_task(task, db: JsonDatabase, model: WhisperModel):
 
     db.updateById(id, {
         "status": TaskStatus.SUCCESS,
-        "lrcPath": output_lrc_path,
+        "lrcPath": output_lrc_name,
     })
 
     # 删除本地音频文件

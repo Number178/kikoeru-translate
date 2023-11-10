@@ -43,13 +43,14 @@ def multithread_download_file(id:int):
     # 从最开始上传task的displayName中获取这个文件的扩展名，比如 ".mp3"
     arr = os.path.splitext(t['displayName'])
     ext = arr[-1] if len(arr) > 1 else ""
-    save_file_path = os.path.join(output_dir, f"{id}{ext}")
+    save_file_name = f"{id}{ext}"
+    save_file_path = os.path.join(output_dir, save_file_name)
     with urllib.request.urlopen(t['resourceUrl']) as response, open(save_file_path, "wb") as save_file:
         shutil.copyfileobj(response, save_file)
 
     db.updateById(id, {
         "status": task.TaskStatus.DOWNLOADED,
-        "mediaPath": save_file_path,
+        "mediaPath": save_file_name,
     })
     print("file downloaded, id = ", id)
     print("file path = ", save_file_path)
@@ -92,7 +93,7 @@ def downloadTask(id):
         abort(404, "no success task found")
         return 
 
-    with open(tlist[0]['lrcPath'], "r", encoding="utf8") as f:
+    with open(os.path.join(output_dir, tlist[0]['lrcPath']), "r", encoding="utf8") as f:
         lrcContent = f.read()
         
     return json.dumps({ "lrcContent": lrcContent })

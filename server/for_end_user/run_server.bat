@@ -12,7 +12,7 @@ set INPUT_PATH=%CONFIG_DIR%\cache\input
 set OUTPUT_PATH=%CONFIG_DIR%\cache\output
 
 :: 服务器端口
-set PORT=8821
+set PORT=8820
 
 .\server_main\server_main.exe
 

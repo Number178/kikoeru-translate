@@ -21,6 +21,7 @@ CORS(app)
 db = common.getDbInstance()
 output_dir = common.getOutputDir()
 input_dir = common.getInputDir()
+server_port = common.getServerPort()
 
 def normalizeTask(t:Dict):
     a = t.copy()
@@ -99,4 +100,4 @@ def downloadTask(id):
     return json.dumps({ "lrcContent": lrcContent })
 
 if __name__ == '__main__':
-    app.run(port=8820, host="0.0.0.0")
+    app.run(port=server_port, host="0.0.0.0")

@@ -30,4 +30,7 @@ def getBackgroundIdleSeconds()->int:
     return int(s)
 
 def getTranscribeDevice()->str:
-    return os.environ.get("TRANSCRIBE_DEVICE", "cpu")
+    return os.environ.get("TRANSCRIBE_DEVICE", "auto")
+
+def getServerPort()->int:
+    return int(os.environ.get("PORT", "8820"))

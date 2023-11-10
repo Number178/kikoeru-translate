@@ -8,8 +8,8 @@ from pysondb.db import JsonDatabase
 import time
 import json
 import os
-from .task import TaskStatus
-from . import common
+from server.task import TaskStatus
+import server.common as common
 import shutil
 from transcribe import WhisperModel
 import math
@@ -105,11 +105,14 @@ def load_model(model_path:str):
     model = WhisperModel(model_path, device=device, compute_type=compute_type)
     return model
 
-if __name__ == "__main__":
+def main():
     db = common.getDbInstance()
     bgIdleSecs = common.getBackgroundIdleSeconds()
     print("load model start")
     model = load_model(common.getModelPath())
     print("load model finished, start background loop, waiting for transcribe task")
     run_background_task_infinitly(db, bgIdleSecs, model)
+
+if __name__ == "__main__":
+    main()
         

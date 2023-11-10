@@ -11,11 +11,10 @@ set INPUT_PATH=%CONFIG_DIR%\cache\input
 ::字幕输出目录，长期存储，不删除
 set OUTPUT_PATH=%CONFIG_DIR%\cache\output
 
-:: 只读文件夹，模型存放路径，文件夹类似这个样子: ./cache/model/model.bin
-set MODEL_PATH=%CONFIG_DIR%\cache\model
+:: 运行转译的加速设备，如果不提供，默认使用auto，可选：auto/cpu/cuda/mps
+set TRANSCRIBE_DEVICE=auto
 
-:: 运行转译的加速设备，如果不提供，默认使用cpu
-:: set TRANSCRIBE_DEVICE=auto
-set TRANSCRIBE_DEVICE=cuda
+:: 服务器端口
+set PORT=8821
 
 python server/server_main.py

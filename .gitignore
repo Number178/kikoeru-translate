@@ -6,3 +6,4 @@ windows_usage/
 venv/
 db/
 cache/
+__pycache__/

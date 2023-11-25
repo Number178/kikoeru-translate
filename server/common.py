@@ -45,7 +45,7 @@ def getKikoeruUrl()->str:
     url = os.environ.get("KIKOERU_URL", None)
     if url is None:
         raise Exception("kikoeur url not configed")
-    return url
+    return url.rstrip("/") # remove trailing /
 
 def getKikoeruUser()->str:
     return os.environ.get("KIKOERU_USER", "")

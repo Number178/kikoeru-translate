@@ -161,15 +161,18 @@ def transcribe_audio(audio_path:str)->str:
         )
     )
 
-def checkTaskIsDelete(task:Dict)->bool:
+def checkTaskIsOwnByMe(task:Dict)->bool:
     try:
         r = session.get(f"{kikoeru_url}/api/lyric/translate/get", params={
             "id": task["id"],
-        }, stream=True)
+            "secret": task["secret"],
+        })
         if r.status_code == 200:
             data = r.json()
             print("get task status, data = ", data)
-            return 'task' not in data
+            return 'task' in data
+        else:
+            return False
     except Exception as e:
         print("检查任务状态失败：", e)
         raise e
@@ -181,8 +184,8 @@ def processTask(task):
     saveTaskToFile(task)
 
     # 处理前，获取一次任务状态，如果任务被删除了的话，则不处理，直接返回
-    if checkTaskIsDelete(task):
-        print("服务器上的翻译任务已被删除，跳过当前任务")
+    if not checkTaskIsOwnByMe(task):
+        print("服务器上的翻译任务已被删除，或者已经被重新启动翻译进程，跳过当前任务")
         os.unlink(task_file_path)
         return
 
@@ -264,7 +267,7 @@ def main():
         if run_out_of_task:
             sleepAndWait(worker_idle_seconds, "翻译队列为空")
         elif not success:
-            sleepAndWait(worker_idle_seconds, f"发生错误(${task.error})")
+            sleepAndWait(worker_idle_seconds, f"发生错误(${task})")
         else: # success
             print("")
             print("task.id = ", task['id'], "task.secret = ", task['secret'])

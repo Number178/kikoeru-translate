@@ -2,6 +2,7 @@ CONFIG_DIR="./cache"
 export KIKOERU_URL="http://10.6.10.12:8080"
 export KIKOERU_USER="admin"
 export KIKOERU_PASSWORD="123456"
+export WORKER_NAME="unix_01"
 export BG_TASK_WAIT_SECS="5"
 export DB_PATH="$CONFIG_DIR/db" # 数据库目录
 export INPUT_PATH="$CONFIG_DIR/input" # 音频存储目录，其中的音频文件在完成后会被删除

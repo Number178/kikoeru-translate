@@ -240,6 +240,7 @@ def main():
     print("kikoeru_url = ", kikoeru_url)
     print("kikoeru_user = ", kikoeru_user)
     print("kikoeru_password = ", kikoeru_password)
+    print("this translate worker name is: ", worker_name)
     
     global is_need_auth
     global kikoeru_token

@@ -187,6 +187,10 @@ def processTask(task):
     if not checkTaskIsOwnByMe(task):
         print("服务器上的翻译任务已被删除，或者已经被重新启动翻译进程，跳过当前任务")
         os.unlink(task_file_path)
+
+        if 'audio_file_name' in task:
+            print("删除本地音频文件")
+            os.unlink(os.path.join(input_audio_dir, task['audio_file_name']))
         return
 
     if 'audio_file_name' not in task:

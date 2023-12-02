@@ -3,10 +3,10 @@ set CONFIG_DIR=.\cache
 :: kikoeru服务器url
 set KIKOERU_URL=http://192.168.5.11:8888
 
-:: kikoeru服务器用户名
+:: kikoeru服务器用户名，开了用户验证的话就要填这个，没开就不用改这个
 set KIKOERU_USER=admin
 
-:: kikoeru服务器密码
+:: kikoeru服务器密码，开了用户验证的话就要填这个，没开就不用改这个
 set KIKOERU_PASSWORD=123456
 
 :: 当前翻译服务的名称，可配置多台翻译服务向同一个kikoeru翻译服务器请求翻译任务，
